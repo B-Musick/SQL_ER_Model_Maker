@@ -1,0 +1,54 @@
+body{
+    width: 100vw;
+    height: 100vh;
+}
+#er-model-area{
+    width: 100%;
+    height: 100%;
+}
+
+.entity-container{
+    position: absolute;
+    z-index: 9;
+    background-color: #f1f1f1;
+    border: 1px solid #d3d3d3;
+    text-align: center;
+}
+.entity-shape{
+    padding: 10px;
+    cursor: move;
+    z-index: 10;
+    background-color: #2196F3;
+    color: #fff;
+}
+.relationship-container{
+    position: absolute;
+    z-index: 9;
+    text-align: center;
+    
+}
+.relationship-shape {
+    /* padding: 10px; */
+    cursor: move;
+    z-index: 10;
+    /* color: #fff; */
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-bottom-color: red;
+    position: relative;
+    top: -10px;
+    z-index: 100;
+}
+.relationship-shape:after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 10px;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-top-color: red;
+    z-index: 100;
+
+}
