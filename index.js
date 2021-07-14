@@ -186,15 +186,15 @@ function getOffset(el) {
     };
 }
 
-function connect(div1, div2, color, thickness, appendTo, lineNum) { // draw a line connecting elements
+function connect(div1, div2, color, thickness, parentToAppendTo, lineNum) { // draw a line connecting elements
     var off1 = getOffset(div1);
     var off2 = getOffset(div2);
     // bottom right
     var x1 = off1.left + off1.width;
-    var y1 = off1.top + off1.height;
+    var y1 = off1.top + off1.height/2; // Center the line end on the point
     // top right
-    var x2 = off2.left + off2.width;
-    var y2 = off2.top;
+    var x2 = off2.left;
+    var y2 = off2.top + off1.height / 2; // Center the line end on the point
     // distance
     var length = Math.sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
     // center
@@ -220,20 +220,6 @@ function connect(div1, div2, color, thickness, appendTo, lineNum) { // draw a li
     newDiv.style.msTransform = 'rotate(' + angle + 'deg)';
     newDiv.style.transform = 'rotate(' + angle + 'deg)';
 
-
-
-
-    // newDiv.setAttribute('-moz-transform','rotate(' + angle + 'deg)');
-
-
-
-
-
-
-
-    appendTo.appendChild(newDiv);
-
-
-    // document.body.innerHTML += htmlLine;
+    parentToAppendTo.appendChild(newDiv);
 }
 
