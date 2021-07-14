@@ -3,34 +3,24 @@ let erModelDrawArea = document.getElementById("er-model-area");
 
 // Keeps track of the amount of shape types
 let buttonShapeAmounts = {
-    "entity":0, 
-    "relationship":0, 
-    "weak-entity":0, 
-    'relationship-constraint':0,
+    "entity": 0,
+    "relationship": 0,
+    "weak-entity": 0,
+    'relationship-constraint': 0,
     "line": 0,
     "line-point-one": 0,
     "line-point-two": 0
 }
 
-let buttonPress = (buttonID)=>{
-    let button = document.getElementById(buttonID+"-button");
+let buttonPress = (buttonID) => {
+    let button = document.getElementById(buttonID + "-button");
 
     button.addEventListener('click', () => {
-        // Create the container for the element
-        let shapeContainer = createShapeContainer(buttonShapeAmounts, buttonID);
-
-        // Create shape element
-        let shape = createShapeElement(buttonShapeAmounts, buttonID);
-
-        buttonShapeAmounts[buttonID]++; // Increment shape counts
-
-        // Add shape to DOM
-        shapeContainer.appendChild(shape);
-        erModelDrawArea.appendChild(shapeContainer);
+        drawShape(buttonID);
     })
 }
 
-let createShapeContainer=(buttonShapeAmounts, buttonID)=>{
+let createShapeContainer = (buttonShapeAmounts, buttonID) => {
     let shapeCount = buttonShapeAmounts[buttonID]; // Get the shape number
 
     let shapeContainer = document.createElement('div');
@@ -39,7 +29,7 @@ let createShapeContainer=(buttonShapeAmounts, buttonID)=>{
     return shapeContainer;
 }
 
-let createShapeElement =(buttonShapeAmounts, buttonID)=>{
+let createShapeElement = (buttonShapeAmounts, buttonID) => {
     let shapeCount = buttonShapeAmounts[buttonID]; // Get the shape number
 
     let shape = document.createElement('div');
@@ -48,8 +38,7 @@ let createShapeElement =(buttonShapeAmounts, buttonID)=>{
 
     return shape;
 }
-
-let drawNewShape=()=>{
+let drawShape=(buttonID)=>{
     // Create the container for the element
     let shapeContainer = createShapeContainer(buttonShapeAmounts, buttonID);
 
@@ -61,7 +50,9 @@ let drawNewShape=()=>{
     // Add shape to DOM
     shapeContainer.appendChild(shape);
     erModelDrawArea.appendChild(shapeContainer);
+    return shapeContainer;
 }
+
 buttonPress('entity');
 buttonPress('relationship');
 buttonPress('weak-entity');
@@ -93,21 +84,11 @@ function dragElement(elmnt) {
         pos4 = parseInt(e.clientY);
         elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
         elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-        // Need to redraw the line
-        if (elmnt.classList[0] == "line-point-two-container"){
-            // Get the id number
-            let lineNum = elmnt.id.split('').pop();
-            let lineOnePoint = document.getElementById('line-point-one-'+lineNum);
-            let line = document.getElementById('line-'+lineNum);
-            line.remove();
-            connect(lineOnePoint, elmnt, 'black', '2', erModelDrawArea, lineNum);
-        } else if (elmnt.classList[0] == "line-point-one-container"){
-            // Get the id number
-            let lineNum = elmnt.id.split('').pop();
-            let lineTwoPoint = document.getElementById('line-point-two-' + lineNum);
-            let line = document.getElementById('line-' + lineNum);
-            line.remove();
-            connect(lineTwoPoint, elmnt, 'black', '2', erModelDrawArea, lineNum);
+        // Need to redraw the line when dragging one of the squares on end of line
+        if (elmnt.classList[0] == "line-point-two-container") {
+            dragRightPointOfLine(elmnt);
+        } else if (elmnt.classList[0] == "line-point-one-container") {
+            dragLeftPointOfLine(elmnt)
         };
     }
 
@@ -115,9 +96,27 @@ function dragElement(elmnt) {
         document.onmouseup = null;
         document.onmousemove = null;
     }
+
+    function dragRightPointOfLine(elmnt){
+        // Get the id number
+        let lineNum = elmnt.id.split('').pop();
+        let lineOnePoint = document.getElementById('line-point-one-' + lineNum);
+        let line = document.getElementById('line-' + lineNum);
+        line.remove();
+        connect(lineOnePoint, elmnt, 'black', '2', erModelDrawArea, lineNum);
+    }
+
+    function dragLeftPointOfLine(elmnt){
+        // Get the id number
+        let lineNum = elmnt.id.split('').pop();
+        let lineTwoPoint = document.getElementById('line-point-two-' + lineNum);
+        let line = document.getElementById('line-' + lineNum);
+        line.remove();
+        connect(lineTwoPoint, elmnt, 'black', '2', erModelDrawArea, lineNum);
+    }
 }
 
-erModelDrawArea.addEventListener('click',()=>{
+erModelDrawArea.addEventListener('click', () => {
     // Loop through entities and select them
     selectEntities(buttonShapeAmounts, 'entity');
     selectEntities(buttonShapeAmounts, 'relationship');
@@ -133,47 +132,30 @@ erModelDrawArea.addEventListener('click',()=>{
  * @param {*} buttonShapeAmounts 
  * @param {*} id 
  */
-let selectEntities = (buttonShapeAmounts, id) =>{
+let selectEntities = (buttonShapeAmounts, id) => {
     for (let entityNum = 0; entityNum < buttonShapeAmounts[id]; entityNum++) {
-        dragElement(document.getElementById(id+"-container-"+entityNum));
+        dragElement(document.getElementById(id + "-container-" + entityNum));
     }
 }
 
 // Line attempt
 let drawLine = () => {
+
     buttonID1 = 'line-point-one';
-    let shapeContainer = createShapeContainer(buttonShapeAmounts, buttonID1);
+    let shapeCount = buttonShapeAmounts[buttonID1]; // Get the shape number
 
-    let shape = createShapeElement(buttonShapeAmounts, buttonID1); 
-    buttonShapeAmounts[buttonID1]++; // Increment shape counts
-
-    // Add shape to DOM
-    shapeContainer.appendChild(shape);
-    erModelDrawArea.appendChild(shapeContainer);
+    let leftLinePoint = drawShape(buttonID1);
 
     buttonID2 = 'line-point-two';
+    let rightLinePoint = drawShape(buttonID2);
 
-
-    // Create the container for the element
-    let shapeContainers = createShapeContainer(buttonShapeAmounts, buttonID2);
-
-    // Create shape element
-    let shapes = createShapeElement(buttonShapeAmounts, buttonID2);
-
-    buttonShapeAmounts[buttonID2]++; // Increment shape counts
-
-    // Add shape to DOM
-    shapeContainers.appendChild(shapes);
-    erModelDrawArea.appendChild(shapeContainers);
-
-    let shapeCount = buttonShapeAmounts[buttonID1]; // Get the shape number
-    connect(shapeContainer, shapeContainers, 'black', '2', erModelDrawArea, shapeCount);
+    connect(leftLinePoint, rightLinePoint, 'black', '2', erModelDrawArea, shapeCount);
 
 }
 
 let relButtonPress = document.getElementById('relationship-constraint-button');
 
-relButtonPress.addEventListener('click',()=>{
+relButtonPress.addEventListener('click', () => {
     drawLine();
 })
 
@@ -193,7 +175,7 @@ function connect(div1, div2, color, thickness, parentToAppendTo, lineNum) { // d
     var off2 = getOffset(div2);
     // bottom right
     var x1 = off1.left + off1.width;
-    var y1 = off1.top + off1.height/2; // Center the line end on the point
+    var y1 = off1.top + off1.height / 2; // Center the line end on the point
     // top right
     var x2 = off2.left;
     var y2 = off2.top + off1.height / 2; // Center the line end on the point
@@ -209,7 +191,7 @@ function connect(div1, div2, color, thickness, parentToAppendTo, lineNum) { // d
 
 }
 
-let createLine = (cx, cy, length, angle, color, thickness, parentToAppendTo,lineNum) =>{
+let createLine = (cx, cy, length, angle, color, thickness, parentToAppendTo, lineNum) => {
     let newDiv = document.createElement('div');
     newDiv.setAttribute('id', 'line-' + lineNum);
     newDiv.style.padding = "0px";
