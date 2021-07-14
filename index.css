@@ -52,3 +52,69 @@ body{
     z-index: 100;
 
 }
+
+.weak-entity-container{
+    position: absolute;
+    z-index: 9;
+    background-color: #f1f1f1;
+    border: 1px solid #d3d3d3;
+    text-align: center;
+    outline: 1px solid #d3d3d3;
+    outline-offset: 2px;
+}
+.weak-entity-shape{
+    padding: 10px;
+    cursor: move;
+    z-index: 10;
+    background-color: #2196F3;
+    color: #fff;
+}
+
+.relationship-constraint-container{
+    position: absolute;
+    z-index: 9;
+    background-color: black;
+    border: 2px solid black;
+    width: 30px;
+    text-align: center;
+    /* outline: 1px solid #d3d3d3; */
+    /* outline-offset: 2px; */
+}
+.relationship-constraint-shape{
+    /* padding: 1px; */
+    cursor: move;
+    z-index: 10;
+    background-color: #2196F3;
+    color: #fff;
+}
+
+.line-point-one-container{
+    position: absolute;
+    z-index: 9;
+    background-color: #f1f1f1;
+    border: 1px solid #d3d3d3;
+    text-align: center;
+}
+.line-point-one-shape{
+    padding: 1px;
+    cursor: move;
+    z-index: 10;
+    background-color: #2196F3;
+    color: #fff;
+}
+
+.line-point-two-container{
+    position: absolute;
+    z-index: 9;
+    background-color: #f1f1f1;
+    border: 1px solid #d3d3d3;
+    text-align: center;
+    left: 100px
+}
+.line-point-two-shape{
+    padding: 1px;
+    cursor: move;
+    z-index: 10;
+    background-color: #2196F3;
+    color: #fff;
+}
