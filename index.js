@@ -16,27 +16,52 @@ let buttonPress = (buttonID)=>{
     let button = document.getElementById(buttonID+"-button");
 
     button.addEventListener('click', () => {
-        let shapeCount = buttonShapeAmounts[buttonID]; // Get the shape number
-
         // Create the container for the element
-        let shapeContainer = document.createElement('div');
-        shapeContainer.classList.add(buttonID+'-container');
-        shapeContainer.id = buttonID + '-container-' + shapeCount;
+        let shapeContainer = createShapeContainer(buttonShapeAmounts, buttonID);
 
         // Create shape element
-        let shape = document.createElement('div');
-        shape.classList.add(buttonID+'-shape');
-        shape.id = buttonID + "-" + shapeCount; // Set the ID for the shape
+        let shape = createShapeElement(buttonShapeAmounts, buttonID);
 
         buttonShapeAmounts[buttonID]++; // Increment shape counts
 
         // Add shape to DOM
         shapeContainer.appendChild(shape);
         erModelDrawArea.appendChild(shapeContainer);
-
     })
 }
 
+let createShapeContainer=(buttonShapeAmounts, buttonID)=>{
+    let shapeCount = buttonShapeAmounts[buttonID]; // Get the shape number
+
+    let shapeContainer = document.createElement('div');
+    shapeContainer.classList.add(buttonID + '-container');
+    shapeContainer.id = buttonID + '-container-' + shapeCount;
+    return shapeContainer;
+}
+
+let createShapeElement =(buttonShapeAmounts, buttonID)=>{
+    let shapeCount = buttonShapeAmounts[buttonID]; // Get the shape number
+
+    let shape = document.createElement('div');
+    shape.classList.add(buttonID + '-shape');
+    shape.id = buttonID + "-" + shapeCount; // Set the ID for the shape
+
+    return shape;
+}
+
+let drawNewShape=()=>{
+    // Create the container for the element
+    let shapeContainer = createShapeContainer(buttonShapeAmounts, buttonID);
+
+    // Create shape element
+    let shape = createShapeElement(buttonShapeAmounts, buttonID);
+
+    buttonShapeAmounts[buttonID]++; // Increment shape counts
+
+    // Add shape to DOM
+    shapeContainer.appendChild(shape);
+    erModelDrawArea.appendChild(shapeContainer);
+}
 buttonPress('entity');
 buttonPress('relationship');
 buttonPress('weak-entity');
@@ -117,18 +142,9 @@ let selectEntities = (buttonShapeAmounts, id) =>{
 // Line attempt
 let drawLine = () => {
     buttonID1 = 'line-point-one';
-    let shapeCount = buttonShapeAmounts[buttonID1]; // Get the shape number
+    let shapeContainer = createShapeContainer(buttonShapeAmounts, buttonID1);
 
-    // Create the container for the element
-    let shapeContainer = document.createElement('div');
-    shapeContainer.classList.add(buttonID1 + '-container');
-    shapeContainer.id = buttonID1 + '-container-' + shapeCount;
-
-    // Create shape element
-    let shape = document.createElement('div');
-    shape.classList.add(buttonID1 + '-shape');
-    shape.id = buttonID1 + "-" + shapeCount; // Set the ID for the shape
-
+    let shape = createShapeElement(buttonShapeAmounts, buttonID1); 
     buttonShapeAmounts[buttonID1]++; // Increment shape counts
 
     // Add shape to DOM
@@ -137,17 +153,12 @@ let drawLine = () => {
 
     buttonID2 = 'line-point-two';
 
-    let shapeCounts = buttonShapeAmounts['line-point-two']; // Get the shape number
 
     // Create the container for the element
-    let shapeContainers = document.createElement('div');
-    shapeContainers.classList.add(buttonID2 + '-container');
-    shapeContainers.id = buttonID2 + '-container-' + shapeCounts;
+    let shapeContainers = createShapeContainer(buttonShapeAmounts, buttonID2);
 
     // Create shape element
-    let shapes = document.createElement('div');
-    shapes.classList.add(buttonID2 + '-shape');
-    shapes.id = buttonID2 + "-" + shapeCounts; // Set the ID for the shape
+    let shapes = createShapeElement(buttonShapeAmounts, buttonID2);
 
     buttonShapeAmounts[buttonID2]++; // Increment shape counts
 
@@ -155,17 +166,8 @@ let drawLine = () => {
     shapeContainers.appendChild(shapes);
     erModelDrawArea.appendChild(shapeContainers);
 
-    // Get the location of the squares centers
-    var rect = shapeContainer.getBoundingClientRect();
-    console.log(rect.left + ((rect.right-rect.left)/2));
-
-    var rects = shapeContainers.getBoundingClientRect();
-    console.log(rects.left + ((rects.right - rects.left) / 2));
-
+    let shapeCount = buttonShapeAmounts[buttonID1]; // Get the shape number
     connect(shapeContainer, shapeContainers, 'black', '2', erModelDrawArea, shapeCount);
-
-    
-
 
 }
 
@@ -202,17 +204,22 @@ function connect(div1, div2, color, thickness, parentToAppendTo, lineNum) { // d
     var cy = ((y1 + y2) / 2) - (thickness / 2);
     // angle
     var angle = Math.atan2((y1 - y2), (x1 - x2)) * (180 / Math.PI);
-  
+
+    createLine(cx, cy, length, angle, color, thickness, parentToAppendTo, lineNum);
+
+}
+
+let createLine = (cx, cy, length, angle, color, thickness, parentToAppendTo,lineNum) =>{
     let newDiv = document.createElement('div');
-    newDiv.setAttribute('id', 'line-'+lineNum);
+    newDiv.setAttribute('id', 'line-' + lineNum);
     newDiv.style.padding = "0px";
     newDiv.style.margin = "0px";
-    newDiv.style.height = thickness+"px";
+    newDiv.style.height = thickness + "px";
     newDiv.style.backgroundColor = color;
     newDiv.style.lineHeight = "1px";
     newDiv.style.position = "absolute";
-    newDiv.style.left = cx+"px";
-    newDiv.style.top = cy+"px"; 
+    newDiv.style.left = cx + "px";
+    newDiv.style.top = cy + "px";
     newDiv.style.width = length + "px";
     newDiv.style.MozTransform = 'rotate(' + angle + 'deg)';
     newDiv.style.WebkitTransform = 'rotate(' + angle + 'deg)';
@@ -222,4 +229,3 @@ function connect(div1, div2, color, thickness, parentToAppendTo, lineNum) { // d
 
     parentToAppendTo.appendChild(newDiv);
 }
-
